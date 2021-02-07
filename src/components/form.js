@@ -49,7 +49,7 @@ export default function Form() {
           <div className="sm:col-span-2">
             <label
               htmlFor="phoneNumber"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 text-center md:text-justify"
             >
               Número de teléfono
             </label>
@@ -89,16 +89,16 @@ export default function Form() {
           <div className="sm:col-span-2">
             <label
               htmlFor="message"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 text-center md:text-justify"
             >
               Mensaje (opcional)
             </label>
-            <div className="mt-1">
+            <div className="mt-1 border rounded-md shadow-sm ">
               <textarea
                 id="message"
                 name="message"
                 rows="4"
-                className="py-3 px-4 block w-full shadow-sm border focus:ring-wal-green focus:border-wal-green border-gray-300 rounded-md"
+                className="py-3 px-4 block w-full focus:ring-wal-green focus:border-wal-green border-gray-300 rounded-md"
                 maxLength="40"
                 value={values.message}
                 onChange={handleChange}

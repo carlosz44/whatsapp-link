@@ -17,7 +17,6 @@ export default function Header() {
       // document.querySelector("html").classList.remove("bg-gray-900");
       // document.querySelector("html").classList.add("bg-gray-100");
     }
-    console.log(switchValue);
   }, [switchValue]);
 
   return (
@@ -50,6 +49,7 @@ export default function Header() {
               checked={switchValue}
               onChange={setSwitchValue}
               className={`bg-gray-600 relative inline-flex focus:ring flex-shrink-0 h-6 transition-colors duration-200 ease-in-out border-2 border-transparent rounded-full cursor-pointer w-11 focus:outline-none focus:shadow-outline`}
+              aria-label="Dark Mode Button"
             >
               {({ checked }) => (
                 <span
@@ -73,6 +73,7 @@ export default function Header() {
                       d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
                     />
                   </svg>
+
                   <svg
                     className={`${checked ? "" : "hidden"} w-4 h-4 text-white`}
                     fill="none"
