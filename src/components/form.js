@@ -1,7 +1,33 @@
 import { useFormik } from "formik";
+import { useState } from "react";
 import * as Yup from "yup";
 
 export default function Form() {
+  const countries = [
+    {
+      id: 51,
+      label: "PE +51",
+    },
+    {
+      id: 52,
+      label: "MX +52",
+    },
+    {
+      id: 54,
+      label: "AR +54",
+    },
+    {
+      id: 56,
+      label: "CL +56",
+    },
+    {
+      id: 57,
+      label: "CO +57",
+    },
+  ];
+  const [message, setMessage] = useState("");
+  const handleTextChange = (e) => setMessage(e.target.value);
+
   const {
     values,
     handleChange,
@@ -13,7 +39,7 @@ export default function Form() {
   } = useFormik({
     initialValues: {
       phoneNumber: "",
-      message: "",
+      country: "51",
     },
     validationSchema: Yup.object({
       phoneNumber: Yup.number()
@@ -21,21 +47,16 @@ export default function Form() {
         .max(999999999, "El número de teléfono debe tener 9 dígitos")
         .required("El número de teléfono es obligatorio"),
       message: Yup.string(),
+      country: Yup.number(),
     }),
-    onSubmit: (datos) => {
-      const message = `${datos.message.replace(/\n/g, "%0A")}`;
-      const link =
-        message === ""
-          ? `https://${
-              window.innerWidth < 801 ? "api" : "api"
-            }.whatsapp.com/send?phone=51${datos.phoneNumber}`
-          : `https://${
-              window.innerWidth < 801 ? "api" : "api"
-            }.whatsapp.com/send?phone=51${datos.phoneNumber}&text=${message}`;
+    onSubmit: (formData) => {
+      const formattedMessage = `${message.replace(/\n/g, "%0A")}`;
+      let link = `https://api.whatsapp.com/send?phone=${formData.country}${formData.phoneNumber}`;
+      message !== "" ? (link += `&text=${formattedMessage}`) : "";
 
-      // console.log(datos);
       window.open(link, "_blank");
       resetForm();
+      setMessage("");
     },
   });
 
@@ -43,76 +64,86 @@ export default function Form() {
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
         <form
-          className="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 space-y-6"
+          className="grid grid-cols-1 sm:gap-x-8 space-y-6"
           onSubmit={handleSubmit}
         >
-          <div className="sm:col-span-2">
+          <div className="col-span-1">
             <label
               htmlFor="phoneNumber"
               className="block text-sm font-medium text-gray-700 text-center md:text-justify"
             >
               Número de teléfono
             </label>
-            <div className="mt-1 relative rounded-md shadow-sm border">
-              <div className="absolute inset-y-0 left-0 flex items-center">
+            <div className="grid grid-cols-3 gap-2 mt-1 rounded-md ">
+              <div className="col-span-1 text-center">
                 <label htmlFor="country" className="sr-only">
                   Country
                 </label>
                 <select
                   id="country"
                   name="country"
-                  className="h-full py-0 pl-5 pr-10 border-transparent bg-transparent text-gray-500 focus:ring-wal-green focus:border-wal-green rounded-md"
+                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.country}
                 >
-                  <option>PE +51</option>
+                  {countries.map((country) => (
+                    <option key={country.id} value={country.id}>
+                      {country.label}
+                    </option>
+                  ))}
                 </select>
               </div>
-              <input
-                type="tel"
-                name="phoneNumber"
-                id="phoneNumber"
-                autoComplete="tel"
-                className="py-3 px-4 block w-full pl-28 focus:ring-wal-green focus:border-wal-green border-gray-300 rounded-md"
-                placeholder="987 654 321"
-                maxLength="9"
-                // pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
-                value={values.phoneNumber}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
+              <div className="col-span-2">
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  id="phoneNumber"
+                  autoComplete="tel"
+                  className="mt-1 w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="987 654 321"
+                  maxLength="9"
+                  // pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+                  value={values.phoneNumber}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+              </div>
             </div>
             {touched.phoneNumber && errors.phoneNumber ? (
               <div className="my-2 bg-gray-50 border-l-4 border-red-700 text-red-700 p-4 text-sm">
-                <p className="">Error: {errors.phoneNumber} </p>
+                <p>Error: {errors.phoneNumber}</p>
               </div>
             ) : null}
           </div>
-          <div className="sm:col-span-2">
+          <div className="col-span-1">
             <label
               htmlFor="message"
               className="block text-sm font-medium text-gray-700 text-center md:text-justify"
             >
               Mensaje (opcional)
             </label>
-            <div className="mt-1 border rounded-md shadow-sm ">
+            <div>
               <textarea
                 id="message"
                 name="message"
                 rows="4"
-                className="py-3 px-4 block w-full focus:ring-wal-green focus:border-wal-green border-gray-300 rounded-md"
-                maxLength="40"
-                value={values.message}
-                onChange={handleChange}
+                className="py-3 px-4 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                maxLength="120"
+                value={message}
+                onChange={handleTextChange}
                 onBlur={handleBlur}
+                placeholder="Hola!"
               ></textarea>
             </div>
           </div>
-          <div className="sm:col-span-2">
+          <div className="col-span-1">
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-wal-green hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wal-green"
+              className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-w-green hover:bg-ic-yellow hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ic-blue transition duration-300"
               value="Enviar mensaje"
             >
-              Enviar Mensaje
+              Enviar mensaje
             </button>
           </div>
         </form>

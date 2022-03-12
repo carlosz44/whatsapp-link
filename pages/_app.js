@@ -9,18 +9,18 @@ function MyApp({ Component, pageProps }) {
   return (
     <Layout>
       <Head>
-        <title>WhatsApp Link</title>
+        <title>Whatsabi</title>
         <meta
           name="Description"
-          content="Envía mensajes a WhatsApp sin agregar el número."
+          content="Envía mensajes a WhatsApp sin agregar el número a tu lista de contactos."
         />
-        <meta name="application-name" content="WhatsApp Link" />
+        <meta name="application-name" content="Whatsabi" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="PWA App" />
         <meta
           name="description"
-          content="Envía mensajes a WhatsApp sin agregar a contactos"
+          content="Envía mensajes a WhatsApp sin agregar  el número a tu lista de contactos"
         />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
