@@ -30,7 +30,9 @@ export default function Form() {
   const handlePaste = (e) => {
     e.preventDefault();
     const input = document.getElementById("phoneNumber");
-    let pastedText = (e.clipboardData || window.clipboardData).getData("text");
+    const pastedText = (e.clipboardData || window.clipboardData).getData(
+      "text"
+    );
     values.phoneNumber = input.value = pastedText.replace(/\D/g, "");
   };
 
