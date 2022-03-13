@@ -27,6 +27,12 @@ export default function Form() {
   ];
   const [message, setMessage] = useState("");
   const handleTextChange = (e) => setMessage(e.target.value);
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const input = document.getElementById("phoneNumber");
+    let pastedText = (e.clipboardData || window.clipboardData).getData("text");
+    values.phoneNumber = input.value = pastedText.replace(/\D/g, "");
+  };
 
   const {
     values,
@@ -38,8 +44,9 @@ export default function Form() {
     resetForm,
   } = useFormik({
     initialValues: {
-      phoneNumber: "",
       country: "51",
+      message: "",
+      phoneNumber: "",
     },
     validationSchema: Yup.object({
       phoneNumber: Yup.number()
@@ -83,8 +90,8 @@ export default function Form() {
                   id="country"
                   name="country"
                   className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  onChange={handleChange}
                   onBlur={handleBlur}
+                  onChange={handleChange}
                   value={values.country}
                 >
                   {countries.map((country) => (
@@ -96,17 +103,18 @@ export default function Form() {
               </div>
               <div className="col-span-2">
                 <input
-                  type="tel"
-                  name="phoneNumber"
                   id="phoneNumber"
+                  name="phoneNumber"
+                  type="tel"
                   autoComplete="tel"
                   className="mt-1 w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  maxLength="15"
                   placeholder="987 654 321"
-                  maxLength="9"
                   // pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
-                  value={values.phoneNumber}
-                  onChange={handleChange}
                   onBlur={handleBlur}
+                  onChange={handleChange}
+                  onPaste={handlePaste}
+                  value={values.phoneNumber}
                 />
               </div>
             </div>
@@ -130,10 +138,10 @@ export default function Form() {
                 rows="4"
                 className="py-3 px-4 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
                 maxLength="120"
-                value={message}
                 onChange={handleTextChange}
                 onBlur={handleBlur}
                 placeholder="Hola!"
+                value={message}
               ></textarea>
             </div>
           </div>

@@ -1,10 +1,12 @@
 import "../src/styles/styles.css";
 import Head from "next/head";
+import Script from "next/script";
 import Layout from "@components/layout";
 import { theme } from "tailwind.config";
 
 function MyApp({ Component, pageProps }) {
   const themeColor = theme.extend.colors["wal-green"];
+  const GA_ID = process.env.NEXT_PUBLIC_ANALYTICS_ID;
 
   return (
     <Layout>
@@ -36,7 +38,19 @@ function MyApp({ Component, pageProps }) {
         />
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
+      <Script
+        strategy="lazyOnload"
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+      />
+      <Script id="ga-analytics">
+        {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
+            gtag('config', '${GA_ID}');
+          `}
+      </Script>
       <Component {...pageProps} />
     </Layout>
   );
