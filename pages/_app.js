@@ -30,11 +30,11 @@ function MyApp({ Component, pageProps }) {
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="theme-color" content={themeColor} />
         <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" href="/icons/icon-192x192.png" />
+        <link rel="icon" href="/icons/whatsabi.png" />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/icons/apple-touch-icon.png"
+          href="/icons/whatsabi.png"
         />
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
