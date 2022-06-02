@@ -1,11 +1,12 @@
-import "../src/styles/styles.css";
-import Head from "next/head";
-import Script from "next/script";
-import Layout from "@components/layout";
-import { theme } from "tailwind.config";
+import '../src/styles/styles.css';
+import 'intl-tel-input/build/css/intlTelInput.css';
+import Head from 'next/head';
+import Script from 'next/script';
+import Layout from '@components/layout';
+import { theme } from 'tailwind.config';
 
 function MyApp({ Component, pageProps }) {
-  const themeColor = theme.extend.colors["wal-green"];
+  const themeColor = theme.extend.colors['wal-green'];
   const GA_ID = process.env.NEXT_PUBLIC_ANALYTICS_ID;
 
   return (

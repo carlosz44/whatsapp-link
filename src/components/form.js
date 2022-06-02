@@ -1,40 +1,33 @@
-import { useFormik } from "formik";
-import { useState } from "react";
-import * as Yup from "yup";
+import { useFormik } from 'formik';
+import { useState, useEffect, useRef } from 'react';
+import * as Yup from 'yup';
+import intlTelInput from 'intl-tel-input';
 
 export default function Form() {
-  const countries = [
-    {
-      id: 51,
-      label: "PE +51",
-    },
-    {
-      id: 52,
-      label: "MX +52",
-    },
-    {
-      id: 54,
-      label: "AR +54",
-    },
-    {
-      id: 56,
-      label: "CL +56",
-    },
-    {
-      id: 57,
-      label: "CO +57",
-    },
-  ];
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const handleTextChange = (e) => setMessage(e.target.value);
+  const inputPhoneNumberRef = useRef(null);
+  const itiRef = useRef(null);
   const handlePaste = (e) => {
     e.preventDefault();
-    const input = document.getElementById("phoneNumber");
+    const input = document.getElementById('phoneNumber');
     const pastedText = (e.clipboardData || window.clipboardData).getData(
-      "text"
+      'text'
     );
-    values.phoneNumber = input.value = pastedText.replace(/\D/g, "");
+    values.phoneNumber = input.value = pastedText.replace(/\D/g, '');
   };
+  useEffect(() => {
+    if (!inputPhoneNumberRef.current) {
+      return;
+    }
+    itiRef.current = intlTelInput(inputPhoneNumberRef.current, {
+      initialCountry: 'pe',
+      preferredCountries: ['pe', 'mx', 'ar', 'cl', 'co'],
+    });
+    return () => {
+      itiRef.current.destroy();
+    };
+  }, []);
 
   const {
     values,
@@ -46,26 +39,25 @@ export default function Form() {
     resetForm,
   } = useFormik({
     initialValues: {
-      country: "51",
-      message: "",
-      phoneNumber: "",
+      message: '',
+      phoneNumber: '',
     },
     validationSchema: Yup.object({
       phoneNumber: Yup.number()
-        .min(900000000, "El número de teléfono debe empezar con 9")
-        .max(999999999, "El número de teléfono debe tener 9 dígitos")
-        .required("El número de teléfono es obligatorio"),
+        // .min(900000000, 'El número de teléfono debe empezar con 9')
+        // .max(999999999, 'El número de teléfono debe tener 9 dígitos')
+        .required('El número de teléfono es obligatorio'),
       message: Yup.string(),
-      country: Yup.number(),
     }),
     onSubmit: (formData) => {
-      const formattedMessage = `${message.replace(/\n/g, "%0A")}`;
-      let link = `https://api.whatsapp.com/send?phone=${formData.country}${formData.phoneNumber}`;
-      message !== "" ? (link += `&text=${formattedMessage}`) : "";
+      const formattedMessage = `${message.replace(/\n/g, '%0A')}`;
+      const countryCode = itiRef.current.getSelectedCountryData().dialCode;
+      let link = `https://api.whatsapp.com/send?phone=${countryCode}${formData.phoneNumber}`;
+      message !== '' ? (link += `&text=${formattedMessage}`) : '';
 
-      window.open(link, "_blank");
+      window.open(link, '_blank');
       resetForm();
-      setMessage("");
+      setMessage('');
     },
   });
 
@@ -84,39 +76,21 @@ export default function Form() {
               Número de teléfono
             </label>
             <div className="grid grid-cols-3 gap-2 mt-1 rounded-md ">
-              <div className="col-span-1 text-center">
+              <div className="col-span-3 text-center">
                 <label htmlFor="country" className="sr-only">
-                  Country
+                  Teléfono
                 </label>
-                <select
-                  id="country"
-                  name="country"
-                  className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.country}
-                >
-                  {countries.map((country) => (
-                    <option key={country.id} value={country.id}>
-                      {country.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-span-2">
                 <input
-                  id="phoneNumber"
+                  ref={inputPhoneNumberRef}
                   name="phoneNumber"
+                  id="phoneNumber"
                   type="tel"
                   autoComplete="tel"
-                  className="mt-1 w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  maxLength="15"
-                  placeholder="987 654 321"
-                  // pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   onPaste={handlePaste}
                   value={values.phoneNumber}
+                  className="mt-1 w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
               </div>
             </div>
@@ -138,7 +112,7 @@ export default function Form() {
                 id="message"
                 name="message"
                 rows="4"
-                className="py-3 px-4 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                className="py-3 px-4 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1"
                 maxLength="120"
                 onChange={handleTextChange}
                 onBlur={handleBlur}
