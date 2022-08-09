@@ -10,6 +10,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.2",
     "formik": "^2.2.6",
+    "intl-tel-input": "^17.0.16",
     "next": "^12.1.0",
     "next-pwa": "^5.0.5",
     "postcss": "^8.4.8",
